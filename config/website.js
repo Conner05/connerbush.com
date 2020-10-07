@@ -6,7 +6,7 @@ module.exports = {
   siteUrl: 'https://connerbush.com', // Domain of your site. No trailing slash!
   siteLanguage: 'en', // Language Tag on <html> element
   siteLogo: 'images/logo.png', // Used for SEO and manifest, path to your image you placed in the 'static' folder
-  selfPortrait: '/images/self_portrait.png',
+  selfPortrait: 'images/self_portrait.png',
   siteDescription: 'Conner Bush developer blog',
   author: 'Conner Bush', // Author for schemaORGJSONLD
   organization: 'STR',

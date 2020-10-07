@@ -81,7 +81,6 @@ const Hero = () => {
               ${bpMaxSM} {
                 display: flex;
                 margin-top: -60px;
-                margin-left: 200px;
                 margin-bottom: 0px;
                 margin-right: 0px;
               }
@@ -95,6 +94,7 @@ const Hero = () => {
                   border-radius: 50%;
                   overflow: hidden;
                   background-color: mediumpurple;
+                  margin: 0 auto;
                 }
               `}
               alt="Conner self portrait"

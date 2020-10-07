@@ -81,6 +81,7 @@ const Center = styled.div`
     font-weight: 400;
     margin-bottom: 0;
     margin-top: 25px;
+    color: white;
     animation: ${FadeIn} 400ms ease-in-out 1;
   }
 `

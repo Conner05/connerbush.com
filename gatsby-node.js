@@ -179,6 +179,30 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     })
 
     createNodeField({
+      name: 'bannerOn',
+      node,
+      value: node.frontmatter.bannerOn,
+    })
+
+    createNodeField({
+      name: 'bannerOnLink',
+      node,
+      value: node.frontmatter.bannerOnLink,
+    })
+
+    createNodeField({
+      name: 'bannerBy',
+      node,
+      value: node.frontmatter.bannerBy,
+    })
+
+    createNodeField({
+      name: 'bannerByLink',
+      node,
+      value: node.frontmatter.bannerByLink,
+    })
+
+    createNodeField({
       name: 'categories',
       node,
       value: node.frontmatter.categories || [],

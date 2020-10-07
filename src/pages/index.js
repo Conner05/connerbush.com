@@ -7,6 +7,8 @@ import Link from 'components/Link'
 import { useTheme } from 'components/Theming'
 import Container from 'components/Container'
 import { rhythm } from '../lib/typography'
+import config from '../../config/website'
+import { bpMaxSM } from '../lib/breakpoints'
 
 const Hero = () => {
   const theme = useTheme()
@@ -26,18 +28,81 @@ const Hero = () => {
           flex-direction: column;
         `}
       >
-        <h1
+        <div
           css={css`
-            color: ${theme.colors.white};
-            position: relative;
-            z-index: 5;
-            line-height: 1.5;
-            margin: 0;
-            max-width: ${rhythm(15)};
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            ${bpMaxSM} {
+              flex-direction: column-reverse;
+              align-items: center;
+            }
           `}
         >
-          Your blog says the things you want to say.
-        </h1>
+          <div
+            css={css`
+              ${bpMaxSM} {
+                display: flex;
+                margin-top: -200px;
+                margin-bottom: -50px;
+              }
+            `}
+          >
+            <h1
+              css={css`
+                color: ${theme.colors.white};
+                position: relative;
+                z-index: 5;
+                line-height: 1.5;
+                margin: 0;
+                max-width: ${rhythm(15)};
+              `}
+            >
+              <span role="img" aria-label="Waving hand emoji">
+                👋
+              </span>{' '}
+              Hi, I'm Conner.
+            </h1>
+          </div>
+          {/* </Container>
+      <Container
+        css={css`
+          display: flex;
+          flex-direction: column;
+        `}
+      > */}
+          <div
+            css={css`
+              width: 20rem;
+              height: 20rem;
+              margin-bottom: -70px;
+              margin-top: -100px;
+              margin-right: -80px;
+              ${bpMaxSM} {
+                display: flex;
+                margin-top: -60px;
+                margin-left: 200px;
+                margin-bottom: 0px;
+                margin-right: 0px;
+              }
+            `}
+          >
+            <img
+              css={css`
+                ${bpMaxSM} {
+                  width: 8rem;
+                  height: 8rem;
+                  border-radius: 50%;
+                  overflow: hidden;
+                  background-color: mediumpurple;
+                }
+              `}
+              alt="Conner self portrait"
+              aria-label="Conner self portrait"
+              src={config.selfPortrait}
+            />
+          </div>
+        </div>
       </Container>
       <div
         css={css`
@@ -56,6 +121,7 @@ const Description = styled.p`
 
 export default function Index({ data: { site, allMdx } }) {
   const theme = useTheme()
+  console.log(allMdx.edges)
   return (
     <Layout site={site}>
       <Hero />
@@ -64,40 +130,42 @@ export default function Index({ data: { site, allMdx } }) {
           padding-bottom: 0;
         `}
       >
-        {allMdx.edges.map(({ node: post }) => (
-          <div
-            key={post.id}
-            css={css`
-              margin-bottom: 40px;
-            `}
-          >
-            <h2
-              css={css({
-                marginBottom: rhythm(0.3),
-                transition: 'all 150ms ease',
-                ':hover': {
-                  color: theme.colors.primary,
-                },
-              })}
+        {allMdx.edges
+          .filter(({ node: post }) => new Date(post.fields.date) <= new Date())
+          .map(({ node: post }) => (
+            <div
+              key={post.id}
+              css={css`
+                margin-bottom: 40px;
+              `}
             >
-              <Link
-                to={post.frontmatter.slug}
-                aria-label={`View ${post.frontmatter.title}`}
+              <h2
+                css={css({
+                  marginBottom: rhythm(0.3),
+                  transition: 'all 150ms ease',
+                  ':hover': {
+                    color: theme.colors.primary,
+                  },
+                })}
               >
-                {post.frontmatter.title}
-              </Link>
-            </h2>
-            <Description>
-              {post.excerpt}{' '}
-              <Link
-                to={post.frontmatter.slug}
-                aria-label={`View ${post.frontmatter.title}`}
-              >
-                Read Article →
-              </Link>
-            </Description>
-          </div>
-        ))}
+                <Link
+                  to={post.frontmatter.slug}
+                  aria-label={`View ${post.frontmatter.title}`}
+                >
+                  {post.frontmatter.title}
+                </Link>
+              </h2>
+              <Description>
+                {post.excerpt}{' '}
+                <Link
+                  to={post.frontmatter.slug}
+                  aria-label={`View ${post.frontmatter.title}`}
+                >
+                  Read Article →
+                </Link>
+              </Description>
+            </div>
+          ))}
         <Link to="/blog" aria-label="Visit blog page">
           View all articles
         </Link>

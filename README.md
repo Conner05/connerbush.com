@@ -38,3 +38,14 @@ A starter project in [Gatsby.js](https://www.gatsbyjs.org/) with [MDX](https://g
 - `yarn`
 - `gatsby develop`
 - visit http://localhost:8000
+
+## Blog TODO List
+
+- wire up convertkit
+- take self portrait
+- change "Join the Newsletter"
+- consider brighter colors
+- remove dark mode
+- update about page
+- update contact page
+- make favicon

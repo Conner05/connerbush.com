@@ -6,14 +6,16 @@ import config from '../../config/website'
 
 export const Twitter = ({ url = `${config.twitter}` }) => {
   const theme = useTheme()
+  const iconColor = theme.colors.socialIcons
+  const hoverColor = theme.colors.accent
   return (
     <Link
       to={url}
       css={css`
-        color: ${theme.colors.text};
+        color: ${iconColor};
         margin-left: 10px;
         :hover {
-          color: ${theme.colors.primary};
+          color: ${hoverColor};
         }
       `}
       aria-label="Visit my Twitter"
@@ -36,14 +38,16 @@ export const Twitter = ({ url = `${config.twitter}` }) => {
 
 export const LinkedIn = ({ url = `${config.linkedin}` }) => {
   const theme = useTheme()
+  const iconColor = theme.colors.socialIcons
+  const hoverColor = theme.colors.accent
   return (
     <Link
       to={url}
       css={css`
         margin-left: 10px;
-        color: ${theme.colors.text};
+        color: ${iconColor};
         :hover {
-          color: ${theme.colors.primary};
+          color: ${hoverColor};
         }
       `}
       aria-label="Visit my LinkedIn"
@@ -65,14 +69,16 @@ export const LinkedIn = ({ url = `${config.linkedin}` }) => {
 
 export const GitHub = ({ url = `${config.github}` }) => {
   const theme = useTheme()
+  const iconColor = theme.colors.socialIcons
+  const hoverColor = theme.colors.accent
   return (
     <Link
       to={url}
       css={css`
         margin-left: 10px;
-        color: ${theme.colors.text};
+        color: ${iconColor};
         :hover {
-          color: ${theme.colors.primary};
+          color: ${hoverColor};
         }
       `}
       aria-label="Visit my GitHub"

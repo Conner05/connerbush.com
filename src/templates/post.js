@@ -15,10 +15,10 @@ export default function Post({
   data: { site, mdx },
   pageContext: { next, prev },
 }) {
-  const author = mdx.frontmatter.author || config.author
   const date = mdx.frontmatter.date
   const title = mdx.frontmatter.title
   const banner = mdx.frontmatter.banner
+  console.log('mdx.frontmatter', mdx.frontmatter)
 
   return (
     <Layout site={site} frontmatter={mdx.frontmatter}>
@@ -54,9 +54,7 @@ export default function Post({
               }
             `}
           >
-            {author && <h3>{author}</h3>}
-            {author && <span>—</span>}
-            {date && <h3>{date}</h3>}
+            {date && <h3>Last Updated {date}</h3>}
           </div>
           {banner && (
             <div
@@ -71,6 +69,16 @@ export default function Post({
                 sizes={banner.childImageSharp.fluid}
                 alt={site.siteMetadata.keywords.join(', ')}
               />
+              <span>
+                Photo by{' '}
+                <a href={mdx.frontmatter.bannerByLink}>
+                  {mdx.frontmatter.bannerBy}
+                </a>{' '}
+                on{' '}
+                <a href={mdx.frontmatter.bannerOnLink}>
+                  {mdx.frontmatter.bannerOn}
+                </a>
+              </span>
             </div>
           )}
           <br />
@@ -107,6 +115,10 @@ export const pageQuery = graphql`
             }
           }
         }
+        bannerOn
+        bannerBy
+        bannerOnLink
+        bannerByLink
         slug
         keywords
       }

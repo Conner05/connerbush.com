@@ -8,7 +8,7 @@ import { bpMaxSM } from '../../lib/breakpoints'
 import Message from '../ConfirmMessage/Message'
 import { PleaseConfirmIllustration } from '../ConfirmMessage/Illustrations'
 
-const FORM_ID = process.env.CONVERTKIT_SIGNUP_FORM
+const FORM_ID = 1718855 //process.env.CONVERTKIT_SIGNUP_FORM
 
 const SubscribeSchema = Yup.object().shape({
   email_address: Yup.string()
@@ -71,16 +71,39 @@ class SignUp extends React.Component {
     const successful = response && response.status === 'success'
 
     return (
-      <div>
+      <div
+        css={css`
+          border: 4px solid ${theme.colors.accent};
+          background: ${theme.colors.signUp};
+          color: ${theme.colors.signUpText};
+          border-radius: 0.5rem;
+          padding: 2rem;
+          margin-top: -2rem;
+        `}
+      >
         {!successful && (
-          <h2
-            css={css`
-              margin-bottom: ${rhythm(1)};
-              margin-top: 0;
-            `}
-          >
-            Join the Newsletter
-          </h2>
+          <React.Fragment>
+            <h2
+              css={css`
+                margin-bottom: ${rhythm(1)};
+                margin-top: 0;
+                color: ${theme.colors.signUpText};
+              `}
+            >
+              Join the Newsletter
+            </h2>
+            <h5
+              css={css`
+                color: ${theme.colors.signUpText};
+              `}
+            >
+              This just means you'll receive each weekly blog post as an email
+              from me and maybe an occasional announcement{' '}
+              <span aria-label="smile emoji" role="img">
+                😀
+              </span>
+            </h5>
+          </React.Fragment>
         )}
 
         <Formik
@@ -178,17 +201,21 @@ class SignUp extends React.Component {
                     />
                   </label>
                   <button
+                    css={css`
+                      margin-bottom: 0.5rem;
+                    `}
                     data-element="submit"
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    {!isSubmitting && 'Submit'}
-                    {isSubmitting && 'Submitting...'}
+                    {!isSubmitting && 'Subscribe'}
+                    {isSubmitting && 'Subscribing...'}
                   </button>
                 </Form>
               )}
-              {submitted &&
-                !isSubmitting && <PostSubmissionMessage response={response} />}
+              {submitted && successful && (
+                <PostSubmissionMessage response={response} />
+              )}
               {errorMessage && <div>{errorMessage}</div>}
             </>
           )}

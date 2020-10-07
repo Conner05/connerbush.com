@@ -48,15 +48,16 @@ const Header = ({ siteTitle }) => {
               line-height: 1.25;
               display: flex;
               align-items: center;
+              z-index: 99;
               a {
                 text-decoration: none;
                 color: ${theme.colors.white};
-                margin-left: 16px;
                 margin-right: 16px;
+                padding: 10px 20px;
               }
               .active {
-                display: none;
-                visibility: hidden;
+                background: ${theme.colors.signUp};
+                border-radius: 15px;
               }
             `}
           >

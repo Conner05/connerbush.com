@@ -128,6 +128,85 @@ const getGlobalStyles = theme => {
         border-radius: 5px;
       }
     }
+
+    .gatsby-highlight-code-line {
+      background-color: #feb;
+      display: block;
+      margin-right: -1em;
+      margin-left: -1em;
+      padding-right: 1em;
+      padding-left: 0.75em;
+      border-left: 0.25em solid #f99;
+    }
+    /**
+ * Add back the container background-color, border-radius, padding, margin
+ * and overflow that we removed from <pre>.
+ */
+    .gatsby-highlight {
+      background-color: #fdf6e3;
+      border-radius: 0.3em;
+      margin: 0.5em 0;
+      padding: 1em;
+      overflow: auto;
+    }
+
+    /**
+ * Remove the default PrismJS theme background-color, border-radius, margin,
+ * padding and overflow.
+ * 1. Make the element just wide enough to fit its content.
+ * 2. Always fill the visible space in .gatsby-highlight.
+ * 3. Adjust the position of the line numbers
+ */
+    .gatsby-highlight pre[class*='language-'] {
+      background-color: transparent;
+      margin: 0;
+      padding: 0;
+      overflow: initial;
+      float: left; /* 1 */
+      min-width: 100%; /* 2 */
+    }
+
+    /**
+ * If you already use line highlighting
+ */
+
+    /* Adjust the position of the line numbers */
+    .gatsby-highlight pre[class*='language-'].line-numbers {
+      padding-left: 2.8em;
+    }
+
+    /**
+ * If you only want to use line numbering
+ */
+
+    .gatsby-highlight {
+      background-color: #fdf6e3;
+      border-radius: 0.3em;
+      margin: 0.5em 0;
+      padding: 1em;
+      overflow: auto;
+    }
+
+    .gatsby-highlight pre[class*='language-'].line-numbers {
+      padding: 0;
+      padding-left: 2.8em;
+      overflow: initial;
+    }
+
+    .sun {
+      width: 20rem;
+      height: 10rem;
+      border-top-left-radius: 10rem;
+      border-top-right-radius: 10rem;
+      position: absolute;
+      background-color: yellow;
+      left: calc(27%);
+      bottom: 43%;
+      transform: translateX(-50%);
+      background-image: linear-gradient(red, yellow),
+        linear-gradient(black, white);
+      box-shadow: rgba(255, 128, 0, 0.7) 0px 0 20px;
+    }
   `
 }
 

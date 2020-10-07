@@ -41,8 +41,19 @@ const Footer = ({ author, noSubscribeForm }) => {
             css={css`
               font-size: 90%;
               opacity: 0.7;
+              width: 80%;
             `}
-          ></div>
+          >
+            <span
+              css={css`
+                font-weight: bold;
+              `}
+            >
+              Disclaimer:
+            </span>{' '}
+            Views and opinions expressed on this blog are my own and are in no
+            way representative of my employer.
+          </div>
           <div>
             <Twitter />
             <GitHub />

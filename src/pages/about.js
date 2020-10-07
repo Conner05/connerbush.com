@@ -27,7 +27,7 @@ export default function Index({ data: { site } }) {
         </p>
         <p>💼 Work for STR</p>
         <p>👪 Married to a stellar woman and have a beautiful daughter</p>
-        <p>🙏 Follower of Jesus Christ</p>
+        <p>🙏 Follower of Jesus</p>
       </Container>
     </Layout>
   )

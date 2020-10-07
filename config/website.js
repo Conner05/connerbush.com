@@ -7,7 +7,7 @@ module.exports = {
   siteLanguage: 'en', // Language Tag on <html> element
   siteLogo: 'images/logo.png', // Used for SEO and manifest, path to your image you placed in the 'static' folder
   selfPortrait: 'images/self_portrait.png',
-  siteDescription: 'Conner Bush developer blog',
+  siteDescription: 'Conner blogs about React, leadership, and team dynamics',
   author: 'Conner Bush', // Author for schemaORGJSONLD
   organization: 'STR',
 

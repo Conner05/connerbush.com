@@ -5,7 +5,7 @@ module.exports = {
   siteTitleShort: "Conner Bush's Blog", // short_name for manifest
   siteUrl: 'https://connerbush.com', // Domain of your site. No trailing slash!
   siteLanguage: 'en', // Language Tag on <html> element
-  siteLogo: 'images/logo.png', // Used for SEO and manifest, path to your image you placed in the 'static' folder
+  siteLogo: 'images/logo.jpg', // Used for SEO and manifest, path to your image you placed in the 'static' folder
   selfPortrait: 'images/self_portrait.png',
   siteDescription: 'Conner blogs about React, leadership, and team dynamics',
   author: 'Conner Bush', // Author for schemaORGJSONLD

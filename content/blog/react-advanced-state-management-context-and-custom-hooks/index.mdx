@@ -1,0 +1,193 @@
+---
+slug: react-advanced-state-management-context-and-custom-hooks
+title: React Advanced State Management - Context and Custom Hooks
+date: '2020-10-20T13:00:00Z'
+description: 'React Advanced State Management - Context and Custom Hooks'
+published: true
+author: 'Conner Bush'
+banner: './adv-context_banner.jpg'
+bannerOn: 'Unsplash'
+bannerBy: 'Aleks Marinkovic'
+bannerByLink: 'https://unsplash.com/@aleks_marinkovic?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'
+bannerOnLink: 'https://unsplash.com/@aleks_marinkovic?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'
+---
+
+In my previous post I wrote about the Context API, prop drilling, and composition.
+We learned that sometimes state management problems can be solved simply by how we structure our components, not using Context.
+It's important to at least _try_ using composition first. If it doesn't work, then you can always reach for Context state management.
+
+# Advanced State Management with Context and Custom Hooks
+
+There is a common pattern often used with Context that is worth introducing now. To achieve this we'll utilize **custom hooks**,
+a topic I haven't covered yet. However, this will serve as a soft introduction to custom hooks and teach us an advanced means of
+handling context at the same time - a win-win!
+
+Let's start out with the component we refactored using composition from m previous post on Context.
+
+```jsx
+function AppWithComposition() {
+  const [user, setUser] = useState()
+  return (
+    <div className="App">
+      <h1 style={{ color: 'green' }}>Now we're in the App</h1>
+      <Header />
+      {user ? (
+        <Content>
+          <ContentBody>
+            <ContentBodyHeader user={user} />
+          </ContentBody>
+          <button onClick={() => setUser(null)}>Logout</button>
+        </Content>
+      ) : (
+        <button onClick={() => setUser({ name: 'Conner' })}>Login</button>
+      )}
+    </div>
+  )
+}
+```
+
+This met our needs, but let's say there are several other components, maybe even separate page routes that need access
+to `user` and it just doesn't make sense to use composition to compose all of those components inside `AppWithComposition`
+anymore. That's a perfect example of how Context can and should be applied. Instead of implementing it like we did before,
+though. We're only going to change one line in our `AppWithComposition`. The rest of the changes will happen in other files.
+
+```jsx
+import { useUser } from './user.context'
+
+function AppWithComposition() {
+  const [user, setUser] = useUser()
+  return (
+    <div className="App">
+      <h1 style={{ color: 'green' }}>Now we're in the App</h1>
+      <Header />
+      {user ? (
+        <Content>
+          <ContentBody>
+            <ContentBodyHeader user={user} />
+          </ContentBody>
+          <button onClick={() => setUser(null)}>Logout</button>
+        </Content>
+      ) : (
+        <button onClick={() => setUser({ name: 'Conner' })}>Login</button>
+      )}
+    </div>
+  )
+}
+```
+
+Do you see what changed? It's subtle, but makes a huge difference. We changed `useState` to `useUser`.
+But wait, React doesn't offer a `useUser` hook? That's right. React doesn't. But, React allows us to create our own _custom hooks_.
+Let's take a closer look.
+
+We imported `useUser` from a file `user.context.js`. Let's take a look at what's in that file.
+
+```jsx
+import React, { useState, useContext } from 'react'
+
+const UserContext = React.createContext()
+
+const UserProvider = props => {
+  const [user, setUser] = useState({})
+  return <UserContext.Provider value={[user, setUser]} {...props} />
+}
+
+const useUser = () => {
+  const contextValue = useContext(UserContext)
+  if (contextValue === undefined) {
+    throw new Error('useUser must be used within a UserProvider')
+  }
+  return contextValue
+}
+
+export { UserProvider, useUser }
+```
+
+The first logic we come to is familiar, `const UserContext = React.createContext()`. That's how we define a Context. Now, what we would typically do is just wrap the containing component(s) in a `Provider`, passing it a `value`, and then call `useContext` from our consumer components in order to access `value`. That works, but the code above provides another layer of abstraction. The first function we come to is `UserProvider`. This function is essentially a wrapper for the `Provider`.
+
+```jsx
+const UserProvider = props => {
+  const [user, setUser] = useState()
+  return <UserContext.Provider value={[user, setUser]} {...props} />
+}
+```
+
+What we've done is abstract the state from the root component from which the `Provider` would typically be called and placed them together in their own component. This makes sense. Why? Otherwise, we would've been declaring `user` with `useState` inside our `AppWithComposition` component, even though it's not needed there. Now, we have a nice layer of abstraction that allows for a separation of concerns.
+
+We understand `useState` by now, but let's take a closer look at the `return` statement.
+
+```jsx
+return <UserContext.Provider value={[user, setUser]} {...props} />
+```
+
+The `Provider` component is the same as we learned in our first lesson on Context. However, now our `value` looks a little different. We're used to seeing just one value passed into the `value` prop on `Provider`. However, we're not limited in that. What we did instead is pass both our state and state setter method as an array, just as it looks destructured from `useState`. We'll see why shortly. Next, we spread `props` into the `Provider`. This is a throwback all the way to one of our first few lessons on components. React will take those props and put them individually on the `Provider` component. For our purposes, we'll be making use of the built-in `children` prop, which, again, we'll see shortly.
+
+The next function is where we set up our **custom hook**. The custom hook is intended to return the `value` that we set for the Context.
+
+```jsx
+const useUser = () => {
+  const contextValue = useContext(UserContext)
+  if (contextValue === undefined) {
+    throw new Error('useUser must be used within a UserProvider')
+  }
+  return contextValue
+}
+```
+
+We added some extra logic to throw an error if the custom hook is used outside of a `Provider`. That's an important point to note. One of the pitfalls we pointed out for Context was that you must be "in scope". In other words, the component using the Context `value` must exist inside the Context's `Provider`. It may not always be clear where that is. What's great about this abstraction is that it makes finding a bug like that easier to track down by conveniently allowing us to throw such an error.
+
+Earlier we said this:
+
+_We're used to seeing just one value passed into the `value` prop on `Provider`. However, we're not limited in that. What we did instead is pass both our state and state setter method as an array, just as it looks destructured from `useState`. We'll see why shortly._
+
+With this hook, `useUser`, we can simply call it like we do `useState`. And, because we set the `Provider`'s `value` with an array of the variables returned from `useState` we can destructure our Context just like we destructure `useState`. Aren't custom hooks awesome?!
+
+```jsx
+import { useUser } from './user.context'
+
+function AppWithComposition() {
+  const [user, setUser] = useUser()
+  return (
+    <div className="App">
+      <h1 style={{ color: 'green' }}>Now we're in the App</h1>
+      <Header />
+      {user ? (
+        <Content>
+          <ContentBody>
+            <ContentBodyHeader user={user} />
+          </ContentBody>
+          <button onClick={() => setUser(null)}>Logout</button>
+        </Content>
+      ) : (
+        <button onClick={() => setUser({ name: 'Conner' })}>Login</button>
+      )}
+    </div>
+  )
+}
+```
+
+Now, we can see that `useUser` is in place of `useState` and that's **the only change** we had to make for this component. The rest of the logic was abstracted away from us.
+
+You may be wondering, _Okay, I see the `useUser`, but where is the `UserProvider` component we defined?_ Going back to something said earlier:
+
+_React will take those props and put them individually on the `Provider` component. For our purposes, we'll be making use of the built-in `children` prop, which, again, we'll see shortly._
+
+In our `index.js` file, where `AppWithComposition` is actually being rendered, we'll see our `UserProvider` in action.
+
+```jsx
+ReactDOM.render(
+  <React.StrictMode>
+    <UserProvider>
+      <AppWithComposition />
+    </UserProvider>
+  </React.StrictMode>,
+  document.getElementById('root'),
+)
+```
+
+Now, everything inside `AppWithComposition` can use the `useUser` hook we created.
+
+# Summary
+
+We've seen another example of managing state with Context. However, this implementation is more advanced,
+adding a layer of abstraction. We've also seen an example of a **custom hook**. Custom hooks give us powerful
+flexibility that we can use to really be expressive and concise with our code.

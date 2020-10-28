@@ -1,0 +1,245 @@
+---
+slug: reacts-useeffect-hook
+title: React's useEffect Hook
+date: '2020-10-27T13:00:00Z'
+description: "React's useEffect Hook"
+published: true
+author: 'Conner Bush'
+banner: './sync-banner.jpg'
+bannerOn: 'Unsplash'
+bannerBy: 'Gabriel Gusmao'
+bannerByLink: 'https://unsplash.com/@gcsgpp?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'
+bannerOnLink: 'https://unsplash.com/s/photos/synchronization?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'
+---
+
+`useEffect` is the replacement for all of the lifecycle methods in class components - think `componentDidMount`, `componentDidUnmount`, etc. However, it's not _just_ a replacement for lifecycle methods. `useEffect` can be used for more than that. We have to shift our thinking from _`useEffect` is just a replacement for lifecycle methods_ to _`useEffect` allows us to synchronize our state_. Let's take a look at how it's written.
+
+```jsx
+useEffect(() => {
+  // some action
+  return () => {
+    // cleanup
+  }
+}, [])
+```
+
+`useEffect` takes a function that runs every time the effect is triggered. The `return` statement is optional. The `return` is essentially only for _cleanup_. For example, let's say in your effect you create a timer with `setTimeout()`. You'd want to clean that up otherwise you'll have a memory leak.
+
+```jsx
+useEffect(() => {
+  const destroyTimer = setTimeout(() => action(), 1000)
+  return () => {
+    destroyTimer()
+  }
+}, [])
+```
+
+Another common scenario would be using something like the RxJS library and subscribing to an `Observable`. Observables always to need to unsubscribed, lest you'll create a memory leak. That's another use-case for the `return` statement in `useEffect`.
+
+You'll notice that `useEffect` not only takes a function as a parameter, it also takes an array. That array is the list of items, sometimes referred to as _dependencies_, to watch so that the effect knows when to run. You can think of the items in the array as _triggers_. Each time an item changes, the effect is triggered. In our previous examples that array has been empty. There are essentially three states for that array to be in, and each state tells the effect to behave differently. Let's look at those.
+
+## _Empty array_
+
+```jsx
+useEffect(
+  () => {
+    // some action
+    return () => {
+      // cleanup
+    }
+  },
+  [] /* runs once on render */
+)
+```
+
+An empty array gives nothing for the effect to trigger from. That means the effect will run once and not run again until the component is re-rendered. You can think of the `[]` as the replacement for `componentDidMount`. Notice I **didn't** say `componentWillMount`. Effects are ran _after_ the component has been mounted.
+
+## _No array_
+
+```jsx
+useEffect(() => {
+  // some action
+  return () => {
+    // cleanup
+  }
+})
+```
+
+Interestingly enough, the array is optional. The _effect_ of this scenario is even more interesting. When there is no array, `useEffect` just runs on every re-render.
+
+**You will likely rarely want to do this.**
+
+## _Array with items (dependencies)_
+
+```jsx
+useEffect(() => {
+  // some action
+  return () => {
+    // cleanup
+  }
+}, [value1, value2])
+```
+
+When `useEffect` has items in the array it treats those items as triggers. Sometimes you'll hear these items referred to as _dependencies_. Each item is _watched_, waiting for it to change. When a change occurs in any one item the effect then runs.
+
+# Common Use Cases
+
+`useEffect` is very flexible and can certainly be used for all kinds of things. However, it's most common use case is **data fetching**. Data fetching is perfect for `useEffect` because it only fires after the component has mounted and it gives us the ability to control when the data fetching is re-triggered, if at all.
+
+```jsx
+useEffect(() => {
+  let apiData = []
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`<url>`)
+      apiData = response.json()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  fetchData()
+}, [])
+```
+
+This is a contrived example that probably isn't very realistic. Most likely, you'd be modifying some state, as opposed to a value defined inside the effect like `apiData`. However, it serves the purpose of showing how an API call might look using `useEffect`.
+
+# Best Practices
+
+## _Referenced Values Should Be Dependencies_
+
+This means that for every value you reference in the effect function it should be listed as a dependency.
+
+```jsx
+// wrong way
+const [value, setValue] = useState("")
+useEffect(() => {
+  setValue(value)
+}, [])
+
+// right way
+useEffect(() => {
+  setValue(value)
+}, [value])
+```
+
+Note we didn't reference `setValue` as a dependency. That's because the method will always be static because it came from `useState`. Because it's static we didn't reference it, however it would be totally fine to add it to the dependency array `[value, setValue]`. However, if another method were that we created, say, `updateValue`, then we would want to include it in the array.
+
+```jsx
+const updateValue = (value) => setValue(value)
+useEffect(() => {
+  updateValue(value)
+}, [value, updateValue])
+```
+
+## _Actions & Updates Should Be Decoupled_
+
+You may be thinking, _"Wait a minute, haven't we been putting update logic in our effect action method this whole time?!"_ And you'd be correct. We have been. _Actions and updates should be decoupled_ is not a hard and fast rule. It's more a pattern to be aware of. When you only have one value as a dependency not much can go wrong, so it's kosher to just update it directly from the effect itself. However, when dependencies start to grow, a need arises to decouple our update logic from action logic.
+
+What does that really mean, though? It effectively means reducing the number of dependencies by **abstraction**. This is typically achieved by using the `useReducer` hook. Since we haven't covered that hook yet - trust me, it warrants its own explanation outside of this scope - we won't dive any deeper into this best practice. It'll be covered in more detail in the `useReducer` lesson.
+
+## _Functions Only Used By An Effect Should Live In The Effect_
+
+I'll admit, this one looks a little weird. But, it makes sense. If a function is referenced in `useEffect` and it is **only** referenced there, then the function should live inside the effect itself.
+
+```jsx
+useEffect(() => {
+  const updateValue = (value) => setValue(value)
+  updateValue(value)
+}, [value])
+```
+
+This is good for two reasons:
+
+- it keeps us from breaking the **Referenced Values Should Be Dependencies** best practice.
+- it clearly shows the method is not used anywhere but inside the effect.
+
+# Gotchas
+
+There are some gotchas with `useEffect` that need to be discussed. One is indirectly related, the other is directly related.
+
+## The setState gotcha
+
+The `useState` hook runs asynchronously and therefore ought to be used with caution inside `useEffect`. What do I mean by this? Let's look at the following example:
+```jsx
+useEffect(() => {
+  setValue('new')
+  if (value === 'new') {
+    // do something
+  }
+}, [value])
+```
+
+Will that conditional return `true` or `false`? Well, since `setState` is asynchronous we can't be certain. So, you should avoid this at all costs.
+
+The alternative is to either use a locally scoped `const` or `let` defined variable or create another `useEffect` that listens for changes to `value`.
+
+```jsx
+useEffect(() => {
+  const tmp = 'new'
+  setValue(tmp)
+  if (tmp === 'new') {
+    // do something
+  }
+}, [value])
+
+// or
+useEffect(() => {
+  setValue('new')
+}, [])
+
+useEffect(() => {
+  if (value === 'new') {
+    // do something
+  }
+}, [value])
+```
+
+## The async gotcha
+
+Earlier when I mentioned data fetching I used the following code example:
+
+```jsx
+useEffect(() => {
+  let apiData = []
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`<url>`)
+      apiData = response.json()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  fetchData()
+}, [])
+```
+
+Notice I defined my function inside the `useEffect` hook. I did not do this:
+
+```jsx
+const fetchData = async () => {
+  try {
+    const response = await fetch(`<url>`)
+    apiData = response.json()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// you can't do this
+useEffect(async () => {
+  let apiData = []
+  
+  await fetchData()
+}, [])
+```
+
+Now, I've tried. Why? Because that's what makes sense. If I want to call an `async` method just use `await` inside the effect and make the effect method `async` itself, right? Right?! No. 
+This won't work, and here's why. Remember earlier we talked about the `return` statement on `useEffect`? That's extremely important here. When the React team created `useEffect` they needed it
+to return a cleanup method, naturally. Well, that flies in the face of what `async` methods return. They return promises! Always! So, the two are by default in conflict with one another. That'say
+why you cannot make `useEffect` itself asynchronous. You must use a workaround. Well, that's not really fair. It's not a workaround. It's just a way of solving your problem that maybe isn't immediately
+intuitive. And that's okay.
+
+# Summary
+
+We've covered a lot. I hope this article will serve as a reference for when you run into `useEffect` troubles. There's still a lot more to unpack, though. And I'll be covering some of those things in the weeks 
+to come. Until next time!

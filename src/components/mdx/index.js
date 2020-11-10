@@ -10,5 +10,5 @@ export default {
   h2: props => <Subtitle {...props} />,
   p: props => <Paragraph {...props} />,
   code: Code,
-  pre: preProps => <pre {...preProps} />,
+  pre: preProps => <pre {...preProps} />
 }

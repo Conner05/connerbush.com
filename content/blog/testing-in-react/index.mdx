@@ -116,6 +116,9 @@ That's why I choose React Testing Library to write tests. It was written with ex
 To give a real, concrete example of what I'm talking about let's look at the code for the component we'll be testing.
 
 ```javascript
+/////////////////////////////////
+// Some code excluded for brevity. See bottom of the article for full code.
+/////////////////////////////////
 class Sample extends React.Component {
   constructor(props) {
     super(props)
@@ -152,6 +155,9 @@ class Sample extends React.Component {
 Now, let's say we want to refactor this to be a function component.
 
 ```javascript
+/////////////////////////////////
+// Some code excluded for brevity. See bottom of the article for full code.
+/////////////////////////////////
 function Sample() {
   const STATUS = { neverEntered: 'neverEntered', entered: 'entered', left: 'left' }
   const [ status, setStatus ] = useState(STATUS.neverEntered)

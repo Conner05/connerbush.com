@@ -1,0 +1,86 @@
+---
+slug: react-typescript-from-scratch
+title: Creating a React + Typescript Project From Scratch
+date: '2021-04-18T13:00:00Z'
+description: 'Creating a React + Typescript Project From Scratch'
+published: true
+author: 'Conner Bush'
+banner: './react-usereducer-banner.jpg'
+bannerOn: 'Unsplash'
+bannerBy: 'Michael Dziedzic'
+bannerOnLink: 'https://unsplash.com/s/photos/decouple?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'
+bannerByLink: 'https://unsplash.com/@lazycreekimages?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'
+---
+
+First we need to initialize our project. You can use _NPM_ or _Yarn_. I like Yarn, so we'll use that.
+If you'd like to use npm instead just look up the cooresponding commands for npm, they're not much different.
+
+```
+yarn init -y
+```
+
+# Install Webpack
+
+Next, we need Webpack. Webpack is the library that enables us to bundle our code so it can served in the browser.
+Now, you may be thinking, _but can't the browser just run Javascript without it being bundled?_ And yes, you'd be right.
+However, if you're building a site for deployment, for actual users, you want your code to to be bundled. If you're not
+familiar with what "bundling" actually means, give it a google. There are some good articles dedicated to explaining it.
+Essentially, though, it's the process combining all your Javascript files into one or just a few minified files to make
+it easier on the network and browser by reducing the file size and number of files coming from the server.
+
+```
+yarn add -D webpack @types/webpack webpack-cli webpack-dev-server webpack-merge html-webpack-plugin @types/html-webpack-plugin clean-webpack-plugin
+```
+
+Why do we need _all_ of these libraries, though? Are they necessary? Well, yes and no, depending on what you want.
+
+### webpack
+
+`webpack` is the main library. We need it for all the things to come.
+
+### @types/webpack
+
+These are the type definitions for webpack. Since we're using Typescript we want that.
+
+### webpack-cli
+
+You need this to actually run the webpack commands via the command line.
+
+### webpack-dev-server
+
+You need this if you want to develop locally and have all the hot module reloading goodness.
+
+### webpack-merge
+
+This one is not necessary, but it allows us to have multiple webpack configs for different environments.
+
+### html-webpack-plugin
+
+This one is also not necessary. But, it makes it easy to inject the bundled Javascript file into the `index.html` page.
+
+### @types/html-webpack-plugin
+
+This is just for the types for the above package - needed because of Typescript.
+
+### clean-webpack-plugin
+
+This package is used for cleaning up the build output folder before a new build - also not necessary, but we _do_ want to always do what it enables.
+There are other ways to accomplish this task, but installing this package is probably the cleanest way, especially since we're already using webpack.
+
+# Install Typescript
+
+Now, we just need to install Typescript and React. Let's start with Typescript.
+
+### typescript
+
+```
+yarn add -D typescript ts-loader ts-node
+```
+
+# Install React
+
+# Configure Webpack
+
+# Configure Typescript
+
+# Configure React

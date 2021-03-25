@@ -27,7 +27,7 @@ export default function Index({ data: { site, allMdx } }) {
         <h1>💼 Portfolio</h1>
         <Description>
           In my career I have written wonderful software for both internal,
-          external, a pay-walled customers. Below you'll find some of my public
+          external, & pay-walled customers. Below you'll find some of my public
           facing work that is not behind a pay wall.
         </Description>
         <Link to="https://connerbush.com" aria-label="Visit my personal blog">

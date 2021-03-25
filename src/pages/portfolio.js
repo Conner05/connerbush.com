@@ -24,7 +24,7 @@ export default function Index({ data: { site, allMdx } }) {
           flex-direction: column;
         `}
       >
-        <h1>My Portfolio of Work</h1>
+        <h1>💼 Portfolio of Work</h1>
         <Link to="https://connerbush.com" aria-label="Visit my personal blog">
           My Personal Blog
         </Link>
